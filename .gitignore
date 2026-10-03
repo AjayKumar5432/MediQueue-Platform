@@ -1,0 +1,22 @@
+# Node modules and build outputs
+node_modules/
+dist/
+dist-ssr/
+build/
+target/
+
+# Logs and environment files
+*.log
+.env
+*.env
+application-local.properties
+
+# Eclipse / IDE metadata
+.metadata/
+.project
+.classpath
+.settings/
+.idea/
+.vscode/
+*.swp
+*.DS_Store

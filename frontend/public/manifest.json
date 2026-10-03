@@ -1,0 +1,24 @@
+{
+  "short_name": "MediQueue",
+  "name": "MediQueue - Multi-Hospital Queue & Appointment Platform",
+  "description": "Smart real-time outpatient department queue management and appointment booking platform",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "type": "image/svg+xml",
+      "sizes": "48x48 72x72 96x96 128x128 192x192 256x256 512x512",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons.svg",
+      "type": "image/svg+xml",
+      "sizes": "192x192 512x512"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#FFFFFF",
+  "theme_color": "#0D9488",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "scope": "/"
+}
