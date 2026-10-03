@@ -192,8 +192,11 @@ function QueueManagement() {
         stompClientRef.current.deactivate();
       }
 
+      const apiBase = import.meta.env.VITE_API_BASE_URL || "http://localhost:8080";
+      const wsUrl = apiBase.endsWith("/api") ? apiBase.replace(/\/api$/, "/ws") : `${apiBase}/ws`;
+
       const client = new Client({
-        webSocketFactory: () => new SockJS("http://localhost:8080/ws"),
+        webSocketFactory: () => new SockJS(wsUrl),
         reconnectDelay: 5000,
         onConnect: () => {
           setWsConnected(true);
@@ -336,22 +339,28 @@ function QueueManagement() {
             <TextField
               select
               size="small"
-              label="Department Queue"
+              label="Select OPD Department"
               value={departmentId || ""}
               onChange={(e) => {
                 const newId = e.target.value;
                 setDepartmentId(newId);
                 setWalkInForm(prev => ({ ...prev, deptId: newId }));
               }}
-              sx={{ minWidth: 220, bgcolor: "#fff" }}
+              sx={{ minWidth: 240, bgcolor: "#fff" }}
               helperText="Assigned Hospital OPD Counter"
             >
-              {availableDepartments.map((dept) => (
-                <MenuItem key={dept.hospitalDepartmentId} value={String(dept.hospitalDepartmentId)}>
-                  {dept.departmentName || dept.department?.departmentName || `Dept #${dept.hospitalDepartmentId}`}
-                  {userRole === "SUPER_ADMIN" && dept.hospitalName ? ` (${dept.hospitalName})` : ""}
+              {availableDepartments.length > 0 ? (
+                availableDepartments.map((dept) => (
+                  <MenuItem key={dept.hospitalDepartmentId} value={String(dept.hospitalDepartmentId)}>
+                    {dept.departmentName || dept.department?.departmentName || `OPD Dept #${dept.hospitalDepartmentId}`}
+                    {userRole === "SUPER_ADMIN" && dept.hospitalName ? ` (${dept.hospitalName})` : ""}
+                  </MenuItem>
+                ))
+              ) : (
+                <MenuItem value={departmentId || "1"}>
+                  {departmentId ? `Department #${departmentId}` : "Loading OPD Departments..."}
                 </MenuItem>
-              ))}
+              )}
             </TextField>
 
             <Button
