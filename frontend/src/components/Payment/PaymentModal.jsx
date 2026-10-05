@@ -224,7 +224,7 @@ function PaymentModal({ open, onClose, hospitalDepartment, hospitalName, onSucce
                 variant="outlined"
                 color="primary"
                 fullWidth
-                href={`http://localhost:8080/customer/payments/${paymentSuccessData.paymentId}/pdf`}
+                href={`${import.meta.env.VITE_API_BASE_URL || "http://localhost:8080"}/customer/payments/${paymentSuccessData.paymentId}/pdf`}
                 target="_blank"
                 sx={{ py: 1.2, fontWeight: 800, borderRadius: "10px" }}
               >
