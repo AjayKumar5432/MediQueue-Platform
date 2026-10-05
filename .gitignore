@@ -20,3 +20,6 @@ application-local.properties
 .vscode/
 *.swp
 *.DS_Store
+
+*.sql
+

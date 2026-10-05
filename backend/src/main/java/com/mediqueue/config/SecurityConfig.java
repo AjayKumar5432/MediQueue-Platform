@@ -39,7 +39,9 @@ public class SecurityConfig {
                 		        "/ws/**",
                 		        "/ws",
                 		        "/topic/**",
-                		        "/app/**"
+                		        "/app/**",
+                		        "/customer/hospitals/**",
+                		        "/customer/hospital-departments/**"
                 		).permitAll()
 
                         .requestMatchers("/super-admin/**")
@@ -52,7 +54,7 @@ public class SecurityConfig {
                         .hasRole("STAFF")
 
                         .requestMatchers("/customer/**")
-                        .hasRole("CUSTOMER")
+                        .hasAnyRole("CUSTOMER", "STAFF", "HOSPITAL_ADMIN", "SUPER_ADMIN")
                         
                         .anyRequest().authenticated()
                 

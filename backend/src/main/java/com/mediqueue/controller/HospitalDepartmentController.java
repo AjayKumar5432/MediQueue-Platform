@@ -14,7 +14,6 @@ import com.mediqueue.service.HospitalDepartmentService;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/super-admin/hospital-departments")
 @Validated
 public class HospitalDepartmentController {
 
@@ -28,7 +27,7 @@ public class HospitalDepartmentController {
     /**
      * Create Hospital Department Mapping
      */
-    @PostMapping
+    @PostMapping("/super-admin/hospital-departments")
     public ResponseEntity<HospitalDepartmentResponse> createHospitalDepartment(
             @Valid @RequestBody HospitalDepartmentRequest request) {
 
@@ -41,7 +40,7 @@ public class HospitalDepartmentController {
     /**
      * Get All Hospital Department Mappings
      */
-    @GetMapping
+    @GetMapping("/super-admin/hospital-departments")
     public ResponseEntity<List<HospitalDepartmentResponse>> getAllHospitalDepartments() {
 
         return ResponseEntity.ok(
@@ -51,7 +50,7 @@ public class HospitalDepartmentController {
     /**
      * Get Hospital Department Mapping By Id
      */
-    @GetMapping("/{hospitalDepartmentId}")
+    @GetMapping("/super-admin/hospital-departments/{hospitalDepartmentId}")
     public ResponseEntity<HospitalDepartmentResponse> getHospitalDepartmentById(
             @PathVariable Long hospitalDepartmentId) {
 
@@ -60,11 +59,13 @@ public class HospitalDepartmentController {
                         hospitalDepartmentId));
     }
     
-    
     /**
-     * Get Departments By Hospital
+     * Get Departments By Hospital (Both Super Admin & Customer / Patient Portal)
      */
-    @GetMapping("/hospital/{hospitalId}")
+    @GetMapping({
+        "/super-admin/hospital-departments/hospital/{hospitalId}",
+        "/customer/hospital-departments/hospital/{hospitalId}"
+    })
     public ResponseEntity<List<HospitalDepartmentResponse>>
     getDepartmentsByHospital(
             @PathVariable Long hospitalId) {
@@ -77,7 +78,7 @@ public class HospitalDepartmentController {
     /**
      * Update Hospital Department Mapping
      */
-    @PutMapping("/{hospitalDepartmentId}")
+    @PutMapping("/super-admin/hospital-departments/{hospitalDepartmentId}")
     public ResponseEntity<HospitalDepartmentResponse> updateHospitalDepartment(
             @PathVariable Long hospitalDepartmentId,
             @Valid @RequestBody HospitalDepartmentRequest request) {
@@ -91,7 +92,7 @@ public class HospitalDepartmentController {
     /**
      * Soft Delete Hospital Department Mapping
      */
-    @DeleteMapping("/{hospitalDepartmentId}")
+    @DeleteMapping("/super-admin/hospital-departments/{hospitalDepartmentId}")
     public ResponseEntity<String> deleteHospitalDepartment(
             @PathVariable Long hospitalDepartmentId) {
 
@@ -101,7 +102,4 @@ public class HospitalDepartmentController {
         return ResponseEntity.ok(
                 "Hospital Department deleted successfully.");
     }
-    
-    
-    
 }
