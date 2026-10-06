@@ -42,7 +42,8 @@ public class SecurityConfig {
                 		        "/app/**",
                 		        "/customer/hospitals/**",
                 		        "/customer/hospital-departments/**",
-                		        "/customer/payments/**/pdf"
+                		        "/customer/payments/*/pdf",
+                		        "/customer/payments/token/*/pdf"
                 		).permitAll()
 
                         .requestMatchers("/super-admin/**")
