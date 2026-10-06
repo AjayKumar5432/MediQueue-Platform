@@ -149,7 +149,7 @@ public class PaymentController {
     /**
      * Download payment receipt PDF
      */
-    @GetMapping("/customer/payments/{paymentId}/pdf")
+    @GetMapping({"/customer/payments/{paymentId}/pdf", "/customer/payments/token/{paymentId}/pdf"})
     public ResponseEntity<byte[]> getPaymentReceiptPdf(@PathVariable Long paymentId) {
         byte[] pdfBytes = receiptService.generateReceipt(paymentId);
         HttpHeaders headers = new HttpHeaders();

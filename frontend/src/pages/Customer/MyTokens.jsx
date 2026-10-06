@@ -35,6 +35,8 @@ import Navbar from "../../components/Navbar/Navbar";
 import { getMyTokens, cancelToken } from "../../api/tokenApi";
 import { requestNotificationPermission, sendNativeNotification } from "../../utils/notificationService";
 
+const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:8080";
+
 function MyTokens() {
 
   const [tokens, setTokens] = useState([]);
@@ -288,14 +290,14 @@ function MyTokens() {
                         </Typography>
                         {token.status === "CANCELLED" ? (
                           <Chip
-                            label="💸 REFUND PENDING (₹500)"
+                            label={`💸 REFUND PENDING (₹${token.consultationFee ? Math.round(token.consultationFee) : 500})`}
                             size="small"
                             sx={{ bgcolor: "#FFFBEB", color: "#D97706", fontWeight: 800, border: "1px solid #FCD34D" }}
                           />
                         ) : (
                           <Chip
                             icon={<CheckCircle fontSize="small" sx={{ color: "#FFFFFF !important" }} />}
-                            label="PAID (₹500)"
+                            label={`PAID (₹${token.consultationFee ? Math.round(token.consultationFee) : 500})`}
                             size="small"
                             sx={{ bgcolor: "#10B981", color: "#FFFFFF", fontWeight: 800 }}
                           />
@@ -408,7 +410,7 @@ function MyTokens() {
                         variant="outlined"
                         color="primary"
                         size="small"
-                        href={`http://localhost:8080/customer/payments/token/${token.tokenId}/pdf`}
+                        href={`${API_BASE}/customer/payments/${token.tokenId}/pdf`}
                         target="_blank"
                         sx={{ fontWeight: 800, borderRadius: 2 }}
                       >

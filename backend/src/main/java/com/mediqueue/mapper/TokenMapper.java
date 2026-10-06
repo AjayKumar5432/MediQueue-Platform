@@ -50,6 +50,10 @@ public class TokenMapper {
         response.setEstimatedTime(
                 token.getEstimatedTime());
 
+        if (token.getHospitalDepartment() != null) {
+            response.setConsultationFee(token.getHospitalDepartment().getConsultationFee());
+        }
+
         return response;
     }
 

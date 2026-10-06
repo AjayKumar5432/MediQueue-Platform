@@ -28,6 +28,8 @@ public class TokenResponse {
 
     private LocalDateTime estimatedTime;
 
+    private java.math.BigDecimal consultationFee;
+
     public TokenResponse() {
     }
 
@@ -109,5 +111,13 @@ public class TokenResponse {
 
     public void setEstimatedTime(LocalDateTime estimatedTime) {
         this.estimatedTime = estimatedTime;
+    }
+
+    public java.math.BigDecimal getConsultationFee() {
+        return consultationFee;
+    }
+
+    public void setConsultationFee(java.math.BigDecimal consultationFee) {
+        this.consultationFee = consultationFee;
     }
 }

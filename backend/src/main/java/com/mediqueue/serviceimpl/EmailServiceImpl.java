@@ -74,17 +74,22 @@ public class EmailServiceImpl implements EmailService {
             helper.setSubject(
                     "MediQueue - Token Booking Confirmation (" + token.getTokenNumber() + ")");
 
+            String feeStr = (token.getHospitalDepartment() != null && token.getHospitalDepartment().getConsultationFee() != null)
+                    ? token.getHospitalDepartment().getConsultationFee().toString()
+                    : "500";
+
             String body =
                     """
                     Hello %s,
 
                     Your token has been booked successfully!
 
-                    Token Number   : %s
-                    Hospital       : %s
-                    Department     : %s
-                    Booking Date   : %s
-                    Estimated Time : %s
+                    Token Number     : %s
+                    Hospital         : %s
+                    Department       : %s
+                    Consultation Fee : ₹%s (PAID)
+                    Booking Date     : %s
+                    Estimated Time   : %s
 
                     %s
 
@@ -102,6 +107,7 @@ public class EmailServiceImpl implements EmailService {
                             token.getHospitalDepartment()
                                     .getDepartment()
                                     .getDepartmentName(),
+                            feeStr,
                             token.getBookingDate(),
                             token.getEstimatedTime(),
                             pdf != null ? "Please find your digital receipt attached." : ""
