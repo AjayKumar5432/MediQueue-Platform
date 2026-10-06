@@ -110,13 +110,11 @@ public class EmailServiceImpl implements EmailService {
             );
 
             mailSender.send(message);
+            System.out.println("✅ Token receipt email sent successfully to: " + token.getCustomer().getEmail());
 
-        } catch (MessagingException e) {
-
-            throw new RuntimeException(
-                    "Unable to send email.",
-                    e);
-
+        } catch (Exception e) {
+            System.err.println("❌ Failed to send token receipt email to " + token.getCustomer().getEmail() + ": " + e.getMessage());
+            e.printStackTrace();
         }
 
     }

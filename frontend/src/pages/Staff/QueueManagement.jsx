@@ -192,8 +192,9 @@ function QueueManagement() {
         stompClientRef.current.deactivate();
       }
 
-      const apiBase = import.meta.env.VITE_API_BASE_URL || "http://localhost:8080";
-      const wsUrl = apiBase.endsWith("/api") ? apiBase.replace(/\/api$/, "/ws") : `${apiBase}/ws`;
+      const rawBase = (import.meta.env.VITE_API_BASE_URL || "http://localhost:8080").replace(/\/+$/, "");
+      const cleanBase = rawBase.endsWith("/api") ? rawBase.replace(/\/api$/, "") : rawBase;
+      const wsUrl = `${cleanBase}/ws`;
 
       const client = new Client({
         webSocketFactory: () => new SockJS(wsUrl),
@@ -328,13 +329,15 @@ function QueueManagement() {
           </Box>
 
           <Stack direction="row" spacing={2} alignItems="center">
-            <Chip
-              icon={wsConnected ? <Wifi fontSize="small" /> : <WifiOff fontSize="small" />}
-              label={wsConnected ? "WebSocket Live Connected" : "Polling Mode"}
-              color={wsConnected ? "success" : "default"}
-              variant="outlined"
-              sx={{ fontWeight: 700 }}
-            />
+            {wsConnected && (
+              <Chip
+                icon={<Wifi fontSize="small" />}
+                label="WebSocket Live Connected"
+                color="success"
+                variant="outlined"
+                sx={{ fontWeight: 700 }}
+              />
+            )}
 
             <TextField
               select

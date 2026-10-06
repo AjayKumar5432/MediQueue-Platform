@@ -29,9 +29,8 @@ public class WebSocketConfig
         registry.addEndpoint("/ws")
                 .setAllowedOriginPatterns("*");
 
-        // Uncomment later if you build a browser frontend using SockJS
-        // registry.addEndpoint("/ws")
-        //         .setAllowedOriginPatterns("*")
-        //         .withSockJS();
+        registry.addEndpoint("/ws")
+                .setAllowedOriginPatterns("*")
+                .withSockJS();
     }
 }
