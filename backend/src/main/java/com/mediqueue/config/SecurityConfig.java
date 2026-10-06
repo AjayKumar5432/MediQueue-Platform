@@ -52,7 +52,7 @@ public class SecurityConfig {
                         .hasRole("HOSPITAL_ADMIN")
 
                         .requestMatchers("/staff/**")
-                        .hasRole("STAFF")
+                        .hasAnyRole("STAFF", "HOSPITAL_ADMIN", "SUPER_ADMIN")
 
                         .requestMatchers("/customer/**")
                         .hasAnyRole("CUSTOMER", "STAFF", "HOSPITAL_ADMIN", "SUPER_ADMIN")

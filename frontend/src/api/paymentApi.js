@@ -17,5 +17,7 @@ export const getMyPaymentHistory = () =>
 export const recordCashPayment = (data) =>
     axiosClient.post("/staff/payments/record-cash", data);
 
+const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:8080";
+
 export const getPaymentReceiptPdfUrl = (paymentId) =>
-    `http://localhost:8080/customer/payments/${paymentId}/pdf`;
+    `${API_BASE}/customer/payments/${paymentId}/pdf`;

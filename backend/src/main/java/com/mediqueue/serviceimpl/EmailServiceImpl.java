@@ -41,8 +41,22 @@ public class EmailServiceImpl implements EmailService {
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Token not found."));
 
-        byte[] pdf =
-                receiptService.generateReceipt(tokenId);
+        if (token.getCustomer() == null || token.getCustomer().getEmail() == null || token.getCustomer().getEmail().isBlank()) {
+            System.out.println("No customer email provided for token " + tokenId + ", skipping email.");
+            return;
+        }
+
+        if (token.getCustomer().getEmail().toLowerCase().endsWith("@mediqueue.com")) {
+            System.out.println("Walk-in dummy email detected (" + token.getCustomer().getEmail() + "), skipping email dispatch.");
+            return;
+        }
+
+        byte[] pdf = null;
+        try {
+            pdf = receiptService.generateReceipt(tokenId);
+        } catch (Exception e) {
+            System.err.println("⚠️ Warning: Could not generate PDF receipt for token " + tokenId + ": " + e.getMessage());
+        }
 
         try {
 
@@ -50,27 +64,29 @@ public class EmailServiceImpl implements EmailService {
                     mailSender.createMimeMessage();
 
             MimeMessageHelper helper =
-                    new MimeMessageHelper(message, true);
+                    new MimeMessageHelper(message, pdf != null, "UTF-8");
+
+            helper.setFrom("gundala.ajay4321@gmail.com", "MediQueue Platform");
 
             helper.setTo(
                     token.getCustomer().getEmail());
 
             helper.setSubject(
-                    "MediQueue - Token Booking Confirmation");
+                    "MediQueue - Token Booking Confirmation (" + token.getTokenNumber() + ")");
 
             String body =
                     """
                     Hello %s,
 
-                    Your token has been booked successfully.
+                    Your token has been booked successfully!
 
-                    Token Number : %s
-                    Hospital     : %s
-                    Department   : %s
-                    Booking Date : %s
+                    Token Number   : %s
+                    Hospital       : %s
+                    Department     : %s
+                    Booking Date   : %s
                     Estimated Time : %s
 
-                    Please find your receipt attached.
+                    %s
 
                     Thank you for choosing MediQueue.
 
@@ -78,36 +94,29 @@ public class EmailServiceImpl implements EmailService {
                     MediQueue Team
                     """
                     .formatted(
-
                             token.getCustomer().getFullName(),
-
                             token.getTokenNumber(),
-
                             token.getHospitalDepartment()
                                     .getHospital()
                                     .getHospitalName(),
-
                             token.getHospitalDepartment()
                                     .getDepartment()
                                     .getDepartmentName(),
-
                             token.getBookingDate(),
-
-                            token.getEstimatedTime()
-
+                            token.getEstimatedTime(),
+                            pdf != null ? "Please find your digital receipt attached." : ""
                     );
 
             helper.setText(body);
 
-            helper.addAttachment(
-
-                    "TokenReceipt_"
-                            + token.getTokenNumber()
-                            + ".pdf",
-
-                    new ByteArrayResource(pdf)
-
-            );
+            if (pdf != null) {
+                helper.addAttachment(
+                        "TokenReceipt_"
+                                + token.getTokenNumber()
+                                + ".pdf",
+                        new ByteArrayResource(pdf)
+                );
+            }
 
             mailSender.send(message);
             System.out.println("✅ Token receipt email sent successfully to: " + token.getCustomer().getEmail());
@@ -124,6 +133,7 @@ public class EmailServiceImpl implements EmailService {
         try {
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, false, "UTF-8");
+            helper.setFrom("gundala.ajay4321@gmail.com", "MediQueue Platform");
 
             // Send to default superadmin / system notification mail
             helper.setTo("gundala.ajay4321@gmail.com");
@@ -173,6 +183,7 @@ public class EmailServiceImpl implements EmailService {
         try {
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, false, "UTF-8");
+            helper.setFrom("gundala.ajay4321@gmail.com", "MediQueue Platform");
 
             helper.setTo(admin.getEmail());
             helper.setSubject("[MediQueue] Application Received for " + hospital.getHospitalName());
@@ -205,6 +216,7 @@ public class EmailServiceImpl implements EmailService {
         try {
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, false, "UTF-8");
+            helper.setFrom("gundala.ajay4321@gmail.com", "MediQueue Platform");
 
             helper.setTo(admin.getEmail());
 

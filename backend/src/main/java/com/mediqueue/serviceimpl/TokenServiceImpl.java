@@ -114,9 +114,9 @@ public class TokenServiceImpl implements TokenService {
 
         } else {
 
-            if (loggedInUser.getRole() != Role.STAFF) {
+            if (loggedInUser.getRole() != Role.STAFF && loggedInUser.getRole() != Role.HOSPITAL_ADMIN && loggedInUser.getRole() != Role.SUPER_ADMIN) {
                 throw new BadRequestException(
-                        "Only staff can create walk-in tokens.");
+                        "Only hospital staff or administrators can create walk-in tokens.");
             }
 
             if (request.getCustomerId() == null) {
