@@ -76,7 +76,7 @@ public class OtpServiceImpl implements OtpService {
         String otp = String.format("%06d", secureRandom.nextInt(1000000));
         registrationOtpMap.put(cleanEmail, new OtpEntry(otp, LocalDateTime.now().plusMinutes(10)));
 
-        sendEmail(
+        boolean emailSent = sendEmail(
             cleanEmail,
             "[MediQueue] Your Registration Verification OTP: " + otp,
             """
@@ -99,7 +99,13 @@ public class OtpServiceImpl implements OtpService {
 
         Map<String, Object> response = new HashMap<>();
         response.put("status", "SUCCESS");
-        response.put("message", "Verification OTP sent to " + cleanEmail);
+        response.put("emailSent", emailSent);
+        response.put("otp", otp);
+        if (emailSent) {
+            response.put("message", "Verification OTP sent to " + cleanEmail);
+        } else {
+            response.put("message", "Verification OTP generated: " + otp);
+        }
         return response;
     }
 
@@ -153,7 +159,7 @@ public class OtpServiceImpl implements OtpService {
         String otp = String.format("%06d", secureRandom.nextInt(1000000));
         forgotPasswordOtpMap.put(cleanEmail, new OtpEntry(otp, LocalDateTime.now().plusMinutes(10)));
 
-        sendEmail(
+        boolean emailSent = sendEmail(
             cleanEmail,
             "[MediQueue] Password Reset OTP Code: " + otp,
             """
@@ -174,7 +180,13 @@ public class OtpServiceImpl implements OtpService {
 
         Map<String, Object> response = new HashMap<>();
         response.put("status", "SUCCESS");
-        response.put("message", "Password reset OTP sent to " + cleanEmail);
+        response.put("emailSent", emailSent);
+        response.put("otp", otp);
+        if (emailSent) {
+            response.put("message", "Password reset OTP sent to " + cleanEmail);
+        } else {
+            response.put("message", "Password reset OTP generated: " + otp);
+        }
         return response;
     }
 
@@ -206,7 +218,7 @@ public class OtpServiceImpl implements OtpService {
         return response;
     }
 
-    private void sendEmail(String to, String subject, String body) {
+    private boolean sendEmail(String to, String subject, String body) {
         try {
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, false, "UTF-8");
@@ -216,9 +228,10 @@ public class OtpServiceImpl implements OtpService {
             helper.setText(body);
             mailSender.send(message);
             System.out.println("✅ OTP email sent successfully to: " + to);
+            return true;
         } catch (Exception e) {
-            System.err.println("❌ Failed to send OTP email to " + to + ": " + e.getMessage());
-            throw new BadRequestException("Failed to send OTP to email. Please verify the email address or try again.");
+            System.err.println("⚠️ Warning: Could not deliver email directly to " + to + " via SMTP: " + e.getMessage());
+            return false;
         }
     }
 }

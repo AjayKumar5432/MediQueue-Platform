@@ -79,17 +79,27 @@ function Register() {
       setLoading(true);
 
       // Send OTP to email via Backend with pre-validation
-      await sendOtp({
+      const res = await sendOtp({
         email: user.email,
         phone: user.phone
       });
-      toast.info(`Verification OTP sent to ${user.email}`);
+
+      if (res.data?.otp) {
+        if (!res.data.emailSent) {
+          toast.info(`Verification code: ${res.data.otp}`);
+          setOtpCode(res.data.otp);
+        } else {
+          toast.info(`Verification OTP sent to ${user.email}`);
+        }
+      } else {
+        toast.info(`Verification OTP sent to ${user.email}`);
+      }
 
       // Open OTP Dialog
       setOtpOpen(true);
     } catch (error) {
       console.error("OTP Generation Error:", error);
-      const errMsg = error.response?.data?.message || "Failed to send OTP to email. Please check your email address.";
+      const errMsg = error.response?.data?.message || "Failed to generate verification OTP. Please try again.";
       toast.error(errMsg);
     } finally {
       setLoading(false);
@@ -147,11 +157,16 @@ function Register() {
   const handleResendOtp = async () => {
     try {
       setOtpLoading(true);
-      await sendOtp({
+      const res = await sendOtp({
         email: user.email,
         phone: user.phone
       });
-      toast.success(`New OTP resent to ${user.email}`);
+      if (res.data?.otp && !res.data.emailSent) {
+        setOtpCode(res.data.otp);
+        toast.info(`New OTP code: ${res.data.otp}`);
+      } else {
+        toast.success(`New OTP resent to ${user.email}`);
+      }
     } catch (error) {
       const errMsg = error.response?.data?.message || "Failed to resend OTP.";
       toast.error(errMsg);

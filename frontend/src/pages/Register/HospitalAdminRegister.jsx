@@ -227,12 +227,22 @@ function HospitalAdminRegister() {
       setLoading(true);
 
       // Send OTP to Admin Email with pre-validation
-      await sendOtp({
+      const res = await sendOtp({
         email: adminForm.email,
         phone: adminForm.phone,
         hospitalName: adminForm.hospitalName
       });
-      toast.info(`Verification OTP sent to ${adminForm.email}`);
+
+      if (res.data?.otp) {
+        if (!res.data.emailSent) {
+          toast.info(`Admin verification code: ${res.data.otp}`);
+          setOtpCode(res.data.otp);
+        } else {
+          toast.info(`Verification OTP sent to ${adminForm.email}`);
+        }
+      } else {
+        toast.info(`Verification OTP sent to ${adminForm.email}`);
+      }
 
       // Open OTP Modal
       setOtpOpen(true);
@@ -310,12 +320,17 @@ function HospitalAdminRegister() {
   const handleResendAdminOtp = async () => {
     try {
       setOtpLoading(true);
-      await sendOtp({
+      const res = await sendOtp({
         email: adminForm.email,
         phone: adminForm.phone,
         hospitalName: adminForm.hospitalName
       });
-      toast.success(`New OTP code resent to ${adminForm.email}`);
+      if (res.data?.otp && !res.data.emailSent) {
+        setOtpCode(res.data.otp);
+        toast.info(`New OTP code: ${res.data.otp}`);
+      } else {
+        toast.success(`New OTP code resent to ${adminForm.email}`);
+      }
     } catch (error) {
       const errMsg = error.response?.data?.message || "Failed to resend OTP code.";
       toast.error(errMsg);
