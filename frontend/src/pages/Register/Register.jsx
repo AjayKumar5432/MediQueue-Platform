@@ -21,7 +21,7 @@ import axios from "axios";
 
 import Navbar from "../../components/Navbar/Navbar";
 import Footer from "../../components/Footer/Footer";
-import { register } from "../../api/authApi";
+import { register, sendOtp, verifyOtp } from "../../api/authApi";
 import PasswordStrengthIndicator, { isPasswordStrong } from "../../components/Common/PasswordStrengthIndicator";
 
 function Register() {
@@ -79,7 +79,7 @@ function Register() {
       setLoading(true);
 
       // Send OTP to email via Backend with pre-validation
-      await axios.post("http://localhost:8080/auth/send-otp", {
+      await sendOtp({
         email: user.email,
         phone: user.phone
       });
@@ -107,7 +107,7 @@ function Register() {
       setOtpLoading(true);
 
       // Verify OTP via Backend
-      const verifyRes = await axios.post("http://localhost:8080/auth/verify-otp", {
+      const verifyRes = await verifyOtp({
         email: user.email,
         otp: otpCode.trim()
       });
@@ -132,7 +132,7 @@ function Register() {
           navigate("/login");
         }, 1500);
       } else {
-        toast.error("Invalid or expired OTP. Please try again.");
+        toast.error(verifyRes.data?.message || "Invalid or expired OTP. Please try again.");
       }
     } catch (error) {
       console.error("OTP Verification Error:", error);
@@ -147,7 +147,7 @@ function Register() {
   const handleResendOtp = async () => {
     try {
       setOtpLoading(true);
-      await axios.post("http://localhost:8080/auth/send-otp", {
+      await sendOtp({
         email: user.email,
         phone: user.phone
       });

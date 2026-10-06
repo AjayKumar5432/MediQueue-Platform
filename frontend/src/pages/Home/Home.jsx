@@ -47,6 +47,7 @@ import LiveQueueCard from "../../components/LiveQueueCard/LiveQueueCard";
 import { isLoggedIn, getRole, getHospitalId } from "../../utils/session";
 
 import { getDepartmentsByHospital } from "../../api/hospitalDepartmentApi";
+import { getAuthHospitals } from "../../api/authApi";
 
 
 const DB_HOSPITALS = [
@@ -213,7 +214,7 @@ function Home() {
 
   const fetchHospitals = async () => {
     try {
-      const res = await axios.get("http://localhost:8080/auth/hospitals");
+      const res = await getAuthHospitals();
       if (res.data && Array.isArray(res.data) && res.data.length > 0) {
         setHospitals(res.data);
       } else {

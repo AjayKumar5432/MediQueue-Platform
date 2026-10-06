@@ -43,7 +43,7 @@ import axios from "axios";
 
 import Navbar from "../../components/Navbar/Navbar";
 import Footer from "../../components/Footer/Footer";
-import { registerHospitalAdmin, registerHospital } from "../../api/authApi";
+import { registerHospitalAdmin, registerHospital, sendOtp, verifyOtp } from "../../api/authApi";
 import axiosClient from "../../api/axiosClient";
 
 
@@ -227,7 +227,7 @@ function HospitalAdminRegister() {
       setLoading(true);
 
       // Send OTP to Admin Email with pre-validation
-      await axios.post("http://localhost:8080/auth/send-otp", {
+      await sendOtp({
         email: adminForm.email,
         phone: adminForm.phone,
         hospitalName: adminForm.hospitalName
@@ -259,7 +259,7 @@ function HospitalAdminRegister() {
       setOtpLoading(true);
 
       // Verify OTP via Backend
-      const verifyRes = await axios.post("http://localhost:8080/auth/verify-otp", {
+      const verifyRes = await verifyOtp({
         email: adminForm.email,
         otp: otpCode.trim()
       });
@@ -292,7 +292,7 @@ function HospitalAdminRegister() {
           navigate("/admin/login");
         }, 1800);
       } else {
-        toast.error("Invalid or expired OTP. Please try again.");
+        toast.error(verifyRes.data?.message || "Invalid or expired OTP. Please try again.");
       }
     } catch (error) {
       console.error("Admin Registration Error:", error);
@@ -310,7 +310,7 @@ function HospitalAdminRegister() {
   const handleResendAdminOtp = async () => {
     try {
       setOtpLoading(true);
-      await axios.post("http://localhost:8080/auth/send-otp", {
+      await sendOtp({
         email: adminForm.email,
         phone: adminForm.phone,
         hospitalName: adminForm.hospitalName

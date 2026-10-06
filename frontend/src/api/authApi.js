@@ -24,4 +24,16 @@ export const sendForgotPasswordOtp = (email) => {
 export const resetPasswordWithOtp = (email, otp, newPassword) => {
     return axiosClient.post("/auth/forgot-password/reset", { email, otp, newPassword });
 };
+
+export const sendOtp = (otpData) => {
+    return axiosClient.post("/auth/send-otp", otpData);
+};
+
+export const verifyOtp = (otpData) => {
+    return axiosClient.post("/auth/verify-otp", otpData);
+};
+
+export const getAuthHospitals = () => {
+    return axiosClient.get("/auth/hospitals");
+};
 
